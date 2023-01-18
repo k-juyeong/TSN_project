@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
     // 1. socket() 생성
     int sock;
     int recv_len, send_len;
-    char message[100];
+    char buffer[100];
 
     struct sockaddr_in server_addr, client_addr;
     socklen_t server_addr_size, client_addr_size;
@@ -22,33 +22,41 @@ int main(int argc, char* argv[]) {
     }
 
     // 소켓 생성
-    sock = socket(PF_INET, SOCK_STREAM, 0);
+    sock = socket(PF_INET, SOCK_DGRAM, 0);
     // 에러 처리
     if(sock == -1)
         error_handling("socket() error");
 
+    // 주소 생성
+    memset(&client_addr, 0, sizeof(client_addr));
+
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = inet_addr(argv[1]);
+    server_addr.sin_port = htons(atoi(argv[2]));
+
     while(1) {
         fputs("Leave a message(Q/q for quit) >> ", stdout);
-        fgets(message, 100, stdin);
+        fgets(buffer, 100, stdin);
         
-        if(!strcmp(message, "q\n") || !strcmp(message, "Q\n"))
+        if(!strcmp(buffer, "q\n") || !strcmp(buffer, "Q\n"))
             break;
 
         // 2. sendto()
         server_addr_size = sizeof(server_addr);
-        send_len = sendto(sock, message, 100, 0, (struct sockaddr*) &server_addr, &server_addr_size);
+        send_len = sendto(sock, buffer, sizeof(buffer), 0, (struct sockaddr*) &server_addr, &server_addr_size);
         // 에러 처리
         if(send_len == -1)
             error_handling("sendto() error");
 
         // 3. recvfrom()
         client_addr_size = sizeof(client_addr);
-        recv_len = recvfrom(sock, message, 100, 0, (struct sockaddr*) &client_addr, &client_addr_size);
+        recv_len = recvfrom(sock, buffer, sizeof(buffer), 0, (struct sockaddr*) &client_addr, &client_addr_size);
         // 에러 처리
         if(recv_len == -1)
             error_handling("recvfrom() error");
 
-        printf("Server : %s\n", message);
+        printf("Server : %s\n", buffer);
     }
 
     // 4. close()

@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     int str_len;
     char message[100];
 
-    if(argc != 3) {
+    if (argc != 3) {
         printf("Usage: %s <IP> <port>\n", argv[0]);
         exit(1);
     }
@@ -23,8 +23,9 @@ int main(int argc, char* argv[]) {
     // 소켓 생성
     sock = socket(PF_INET, SOCK_STREAM, 0);
     // 에러 처리
-    if(sock == -1)
+    if (sock == -1) {
         error_handling("socket() error");
+    }
     
     // 연결할 서버 주소
     memset(&server_addr, 0, sizeof(server_addr));
@@ -34,16 +35,18 @@ int main(int argc, char* argv[]) {
 
     // 2. connect() 로 서버와 연결
     // 에러 처리
-    if(connect(sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1)
+    if (connect(sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1) {
         error_handling("connect() error");
+    }
     
     // 3. read(), write() 로 채팅
-    while (1) {
+    while(1) {
         fputs("Leave a message(Q/q for quit) >> ", stdout);
         fgets(message, 100, stdin);
 
-        if (!strcmp(message, "q\n") || !strcmp(message, "Q\n"))
+        if (!strcmp(message, "q\n") || !strcmp(message, "Q\n")) {
             break;
+        }
         
         write(sock, message, sizeof(message));
         str_len = read(sock, message, 99);

@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     // struct sockadd_in client_addr;
     // socklen_t server_addr_size, client_addr_size;
 
-    if(argc != 3) {
+    if (argc != 3) {
         printf("Usage : %s <port> \n", argv[0]);
         exit(1);
     }
@@ -26,8 +26,9 @@ int main(int argc, char* argv[]) {
     // 소켓 생성
     sock = socket(PF_INET, SOCK_DGRAM, 0);
     // 에러 처리
-    if(sock == -1)
+    if (sock == -1) {
         error_handling("socket() error");
+    }
 
     // 주소 생성
     // memset(&client_addr, 0, sizeof(client_addr));
@@ -44,22 +45,25 @@ int main(int argc, char* argv[]) {
         fputs("Leave a message(Q/q for quit) >> ", stdout);
         fgets(message, 100, stdin);
         
-        if(!strcmp(message, "q\n") || !strcmp(message, "Q\n"))
+        if (!strcmp(message, "q\n") || !strcmp(message, "Q\n")) {
             break;
+        }
 
         // // 2. sendto()
         // // server_addr_size = sizeof(server_addr);
         // send_len = sendto(sock, message, sizeof(message), 0, (struct sockaddr*) &server_addr, &server_addr_size);
         // // 에러 처리
-        // if(send_len == -1)
+        // if (send_len == -1) {
         //     error_handling("sendto() error");
+        // }
 
         // // 3. recvfrom()
         // // client_addr_size = sizeof(client_addr);
         // recv_len = recvfrom(sock, message, sizeof(message), 0, (struct sockaddr*) &client_addr, &client_addr_size);
         // // 에러 처리
-        // if(recv_len == -1)
+        // if (recv_len == -1) {
         //     error_handling("recvfrom() error");
+        // }
 
         write(sock, message, strlen(message));
 

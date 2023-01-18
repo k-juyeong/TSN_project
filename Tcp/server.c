@@ -34,11 +34,11 @@ int main(int argc, char *argv[]) {
     // 주소 할당
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = inet_addr(argv[1]);
-    server_addr.sin_port = htons(atoi(argv[2]));
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_addr.sin_port = htons(atoi(argv[1]));
 
     // 주소 할당 실패 시 에러 처리
-    if(bind(server_sock, (struct sockadrr*) &server_addr, sizeof(server_addr)) == -1)
+    if(bind(server_sock, (const struct sockadrr*) &server_addr, sizeof(server_addr)) == -1)
         error_handling("bind() error");
 
 
